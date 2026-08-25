@@ -1,0 +1,25 @@
+# Build directories
+target/
+.classpath
+.project
+.settings/
+*.class
+*.jar
+*.log
+
+# IDE
+.idea/
+*.iml
+*.swp
+*.swo
+*~
+.DS_Store
+.vscode/
+
+# Maven
+.m2/
+dependency-reduced-pom.xml
+
+# Environment
+.env
+.env.local
