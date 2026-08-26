@@ -182,6 +182,21 @@ public class ProductServiceImpl implements ProductService {
     }
 
     /**
+     * Search products by name (case-insensitive partial match).
+     *
+     * @param name the search term to match in product names
+     * @return a list of products matching the search term
+     */
+    @Transactional(readOnly = true)
+    @Override
+    public List<Product> searchProductByName(String name) {
+        log.debug("Searching products by name: {}", name);
+        List<Product> products = productRepository.findByNameContainingIgnoreCase(name);
+        log.info("Found {} products matching name: {}", products.size(), name);
+        return products;
+    }
+
+    /**
      * Validate product request against business rules.
      *
      * Validates:

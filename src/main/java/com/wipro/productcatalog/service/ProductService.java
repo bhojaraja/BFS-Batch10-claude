@@ -64,4 +64,12 @@ public interface ProductService {
      * @return a list of products in the specified category
      */
     List<Product> getProductsByCategory(String category);
+
+    /**
+     * Search products by name (case-insensitive partial match).
+     *
+     * @param name the search term to match in product names
+     * @return a list of products matching the search term
+     */
+    List<Product> searchProductByName(String name);
 }

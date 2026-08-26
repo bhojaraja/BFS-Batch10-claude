@@ -276,6 +276,59 @@ public class ProductController {
     }
 
     /**
+     * Search products by name (case-insensitive partial match).
+     *
+     * HTTP Method: GET
+     * Endpoint: GET /products/search?name={searchTerm}
+     * Status: 200 OK
+     *
+     * @param name the search term to match in product names
+     * @return ResponseEntity with list of matching products and 200 status
+     *
+     * Example Request:
+     * GET /products/search?name=laptop
+     *
+     * Example Response (200):
+     * [
+     *   {
+     *     "id": 1,
+     *     "name": "Dell Laptop",
+     *     "category": "Electronics",
+     *     "price": 999.99,
+     *     "stockQuantity": 50
+     *   },
+     *   {
+     *     "id": 2,
+     *     "name": "HP Laptop",
+     *     "category": "Electronics",
+     *     "price": 799.99,
+     *     "stockQuantity": 30
+     *   }
+     * ]
+     */
+    @GetMapping("/search")
+    @Operation(summary = "Search products by name",
+            description = "Search for products by name (case-insensitive, partial match)")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Products found",
+                    content = @Content(schema = @Schema(implementation = ProductResponseDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid search parameter",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    public ResponseEntity<List<ProductResponseDTO>> searchProductByName(
+            @RequestParam @Parameter(description = "Product name search term") String name) {
+
+        log.info("Searching products by name: {}", name);
+
+        List<Product> products = productService.searchProductByName(name);
+        List<ProductResponseDTO> response = products.stream()
+                .map(this::mapToResponseDTO)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(response);
+    }
+
+    /**
      * Helper method to convert Product entity to ProductResponseDTO.
      *
      * @param product the product entity
@@ -284,6 +337,7 @@ public class ProductController {
     private ProductResponseDTO mapToResponseDTO(Product product) {
         return ProductResponseDTO.builder()
                 .id(product.getId())
+                .productCode(product.getProductCode())
                 .name(product.getName())
                 .description(product.getDescription())
                 .category(product.getCategory())
